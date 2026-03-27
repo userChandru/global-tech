@@ -1,0 +1,72 @@
+resources:
+  jobs:
+    Global_tech_Pipeline:
+      name: Global_tech_Pipeline
+      tasks:
+        - task_key: Data_Ingestion
+          notebook_task:
+            notebook_path: /Workspace/Users/chandrugayathri227@gmail.com/global-tech/01_bronze/nb_01_bronze
+            source: WORKSPACE
+        - task_key: Company_trn
+          depends_on:
+            - task_key: Data_Ingestion
+          notebook_task:
+            notebook_path: /Workspace/Users/chandrugayathri227@gmail.com/global-tech/02_silver/nb_trn_company
+            source: WORKSPACE
+        - task_key: Accounts_trn
+          depends_on:
+            - task_key: Company_trn
+          notebook_task:
+            notebook_path: /Workspace/Users/chandrugayathri227@gmail.com/global-tech/02_silver/nb_trn_accounts
+            source: WORKSPACE
+        - task_key: Departments_trn
+          depends_on:
+            - task_key: Accounts_trn
+          notebook_task:
+            notebook_path: /Workspace/Users/chandrugayathri227@gmail.com/global-tech/02_silver/nb_trn_departments
+            source: WORKSPACE
+        - task_key: Employee_trn
+          depends_on:
+            - task_key: Departments_trn
+          notebook_task:
+            notebook_path: /Workspace/Users/chandrugayathri227@gmail.com/global-tech/02_silver/nb_trn_employee
+            source: WORKSPACE
+        - task_key: General_ledgers_trn
+          depends_on:
+            - task_key: Employee_trn
+          notebook_task:
+            notebook_path: /Workspace/Users/chandrugayathri227@gmail.com/global-tech/02_silver/nb_trn_general_ledgers
+            source: WORKSPACE
+        - task_key: Payroll_trn
+          depends_on:
+            - task_key: General_ledgers_trn
+          notebook_task:
+            notebook_path: /Workspace/Users/chandrugayathri227@gmail.com/global-tech/02_silver/nb_trn_payroll
+            source: WORKSPACE
+        - task_key: Dimension_tables
+          depends_on:
+            - task_key: Payroll_trn
+          notebook_task:
+            notebook_path: /Workspace/Users/chandrugayathri227@gmail.com/global-tech/03_gold/nb_gold_dims
+            source: WORKSPACE
+        - task_key: Facts_tables
+          depends_on:
+            - task_key: Dimension_tables
+          notebook_task:
+            notebook_path: /Workspace/Users/chandrugayathri227@gmail.com/global-tech/03_gold/nb_gold_facts
+            source: WORKSPACE
+        - task_key: Data_Cube
+          depends_on:
+            - task_key: Facts_tables
+          notebook_task:
+            notebook_path: /Workspace/Users/chandrugayathri227@gmail.com/global-tech/03_gold/nb_gold_data_cube
+            source: WORKSPACE
+        - task_key: KPIs
+          depends_on:
+            - task_key: Data_Cube
+          notebook_task:
+            notebook_path: /Workspace/Users/chandrugayathri227@gmail.com/global-tech/03_gold/nb_gold_KPI
+            source: WORKSPACE
+      queue:
+        enabled: true
+      performance_target: PERFORMANCE_OPTIMIZED
